@@ -1,0 +1,27 @@
+{
+  "name": "p6-so-pekocko",
+  "version": "1.0.0",
+  "description": "API So Pekocko for spicy sauces",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Flora-Pvt/p6-so-pekocko.git"
+  },
+  "keywords": [
+    "API",
+    "spicy",
+    "sauces"
+  ],
+  "author": "flora-pvt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Flora-Pvt/p6-so-pekocko/issues"
+  },
+  "homepage": "https://github.com/Flora-Pvt/p6-so-pekocko#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
