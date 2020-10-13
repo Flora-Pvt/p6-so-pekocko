@@ -6,6 +6,7 @@ const MIME_TYPES = {
   'image/png': 'png'
 }
 
+/* -- enregistrement des images ajoutées par les utilisateurs -- */
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, 'images')

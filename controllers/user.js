@@ -3,7 +3,9 @@ const jwt = require('jsonwebtoken')
 
 const User = require('../models/User')
 
+/* -- permet à l'utilisateur de s'inscrire -- */
 exports.signup = (req, res, next) => {
+  /* -- le mot de passe est "salé" 10 fois -- */
   bcrypt.hash(req.body.password, 10)
     .then(hash => {
       const user = new User({
@@ -17,17 +19,20 @@ exports.signup = (req, res, next) => {
     .catch(error => res.status(500).json({ error }))
 }
 
+/* -- permet à l'utilisateur de se connecter -- */
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then(user => {
       if (!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !' })
       }
+      /* -- compare le mot de passe avec le hash -- */
       bcrypt.compare(req.body.password, user.password)
         .then(valid => {
           if (!valid) {
             return res.status(401).json({ error: 'Mot de passe incorrect !' })
           }
+          /* -- crée un token -- */
           res.status(200).json({
             userId: user._id,
             token: jwt.sign(
