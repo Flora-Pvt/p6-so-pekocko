@@ -1,6 +1,7 @@
 const http = require('http')
 const app = require('./app')
 
+/* -- renvoie un port valide -- */
 const normalizePort = val => {
   const port = parseInt(val, 10)
 
@@ -15,6 +16,7 @@ const normalizePort = val => {
 const port = normalizePort(process.env.PORT || '3000')
 app.set('port', port)
 
+/* -- cherche et gère les erreurs -- */
 const errorHandler = error => {
   if (error.syscall !== 'listen') {
     throw error
@@ -25,11 +27,9 @@ const errorHandler = error => {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges.')
       process.exit(1)
-      break
     case 'EADDRINUSE':
       console.error(bind + ' is already in use.')
       process.exit(1)
-      break
     default:
       throw error
   }
@@ -37,6 +37,7 @@ const errorHandler = error => {
 
 const server = http.createServer(app)
 
+/* -- écouteur d'événements -- */
 server.on('error', errorHandler)
 server.on('listening', () => {
   const address = server.address()
