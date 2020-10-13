@@ -1,4 +1,5 @@
 const fs = require('fs')
+// const sharp = require('sharp')
 
 const Sauce = require('../models/Sauce')
 
@@ -36,9 +37,16 @@ exports.modifyThing = (req, res, next) => {
       ...JSON.parse(req.body.sauce),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body }
-  Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, $set: { likes: 0, dislikes: 0, usersLiked: [], usersDisliked: [] }, _id: req.params.id })
-    .then(() => res.status(200).json({ message: ' Sauce modifiée' }))
-    .catch(error => res.status(400).json({ error }))
+  Sauce.findOne({ _id: req.params.id })
+    .then(sauce => {
+      const filename = sauce.imageUrl.split('/images/')[1]
+      fs.unlink(`images/${filename}`, () => {
+        Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, $set: { likes: 0, dislikes: 0, usersLiked: [], usersDisliked: [] }, _id: req.params.id })
+          .then(() => res.status(200).json({ message: ' Sauce modifiée' }))
+          .catch(error => res.status(400).json({ error }))
+      })
+    })
+    .catch(error => res.status(500).json({ error }))
 }
 
 /* -- supprime une sauce et son image du dossier images -- */
