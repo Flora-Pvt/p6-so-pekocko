@@ -6,7 +6,7 @@ const multer = require('../middleware/multer-config')
 
 const saucesCtrl = require('../controllers/sauces')
 
-/* -- routes disponibles pour manipuler les sauces, avec authentification nécessaire -- */
+/* -- availables routes for sauces, with authentication -- */
 router.get('/', auth, saucesCtrl.getAllThings)
 router.get('/:id', auth, saucesCtrl.getOneThing)
 router.post('/', auth, multer, saucesCtrl.createThing)

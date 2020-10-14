@@ -1,7 +1,7 @@
 const http = require('http')
 const app = require('./app')
 
-/* -- renvoie un port valide -- */
+/* -- return a valid port -- */
 const normalizePort = val => {
   const port = parseInt(val, 10)
 
@@ -16,7 +16,7 @@ const normalizePort = val => {
 const port = normalizePort(process.env.PORT || '3000')
 app.set('port', port)
 
-/* -- cherche et gère les erreurs -- */
+/* -- search and handle errors -- */
 const errorHandler = error => {
   if (error.syscall !== 'listen') {
     throw error
@@ -37,7 +37,7 @@ const errorHandler = error => {
 
 const server = http.createServer(app)
 
-/* -- écouteur d'événements -- */
+/* -- event listener -- */
 server.on('error', errorHandler)
 server.on('listening', () => {
   const address = server.address()

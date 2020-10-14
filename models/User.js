@@ -6,7 +6,7 @@ const userSchema = mongoose.Schema({
   password: { type: String, required: true }
 })
 
-/* -- assure une adresse mail par utilisateur -- */
+/* -- ONE email address per user -- */
 userSchema.plugin(uniqueValidator)
 
 module.exports = mongoose.model('User', userSchema)
