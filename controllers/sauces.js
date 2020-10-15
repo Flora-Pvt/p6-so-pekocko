@@ -32,14 +32,14 @@ exports.createThing = (req, res, next) => {
         .toBuffer()
         .then(data => {
           fs.writeFileSync(req.file.path, data)
-          res.status(201).json({ message: req.file.path + ' Sauce created !' })
+          res.status(201).json({ message: 'Sauce created !' })
         })
         .catch(error => res.status(500).json({ error }))
     })
     .catch(error => res.status(400).json({ error }))
 }
 
-/* -- modify a sauce and the image if necessary-- */
+/* -- modify a sauce (and the image if necessary) -- */
 exports.modifyThing = (req, res, next) => {
   if (req.file) {
     JSON.parse(req.body.sauce)
@@ -80,6 +80,7 @@ exports.likeThing = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
       switch (req.body.like) {
+        /* -- if user clicks on like -- */
         case 1:
           if (!sauce.usersLiked.includes(req.body.userId)) {
             Sauce.updateOne(
@@ -90,6 +91,7 @@ exports.likeThing = (req, res, next) => {
               .catch(error => res.status(400).json({ error }))
           }
           break
+          /* -- if user clicks on dislike -- */
         case -1:
           if (!sauce.usersDisliked.includes(req.body.userId)) {
             Sauce.updateOne(
@@ -100,6 +102,7 @@ exports.likeThing = (req, res, next) => {
               .catch(error => res.status(400).json({ error }))
           }
           break
+          /* -- if user clicks while he already liked or disliked -- */
         case 0:
           if (sauce.usersLiked.includes(req.body.userId)) {
             Sauce.updateOne(

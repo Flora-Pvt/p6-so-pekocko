@@ -1,22 +1,28 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const validator = require('validator')
 
 const User = require('../models/User')
 
 /* -- allow user to signup -- */
 exports.signup = (req, res, next) => {
-  /* -- password "salted" 10 times -- */
-  bcrypt.hash(req.body.password, 10)
-    .then(hash => {
-      const user = new User({
-        email: req.body.email,
-        password: hash
+  /* -- validate email -- */
+  if (validator.isEmail(req.body.email) === true) {
+    /* -- password "salted" 10 times -- */
+    bcrypt.hash(req.body.password, 10)
+      .then(hash => {
+        const user = new User({
+          email: req.body.email,
+          password: hash
+        })
+        user.save()
+          .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+          .catch(error => res.status(400).json({ error }))
       })
-      user.save()
-        .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-        .catch(error => res.status(400).json({ error }))
-    })
-    .catch(error => res.status(500).json({ error }))
+      .catch(error => res.status(500).json({ error }))
+  } else {
+    throw 'Unvalid email'
+  }
 }
 
 /* -- allow user to login -- */
