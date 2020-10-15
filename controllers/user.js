@@ -6,8 +6,8 @@ const User = require('../models/User')
 
 /* -- allow user to signup -- */
 exports.signup = (req, res, next) => {
-  /* -- validate email -- */
-  if (validator.isEmail(req.body.email) === true) {
+  /* -- validate email and length of password -- */
+  if (validator.isEmail(req.body.email) === true && validator.isLength(req.body.password, 8, 50)) {
     /* -- password "salted" 10 times -- */
     bcrypt.hash(req.body.password, 10)
       .then(hash => {
@@ -21,7 +21,7 @@ exports.signup = (req, res, next) => {
       })
       .catch(error => res.status(500).json({ error }))
   } else {
-    throw 'Unvalid email'
+    res.status(400).json('Unvalid email or your password has to be 8 length')
   }
 }
 
