@@ -1,5 +1,6 @@
 const fs = require('fs')
 const sharp = require('sharp')
+const validator = require('validator')
 
 const Sauce = require('../models/Sauce')
 
@@ -20,6 +21,15 @@ exports.getOneThing = (req, res, next) => {
 /* -- create a sauce and resize uploaded image -- */
 exports.createThing = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce)
+  function escaping () {
+    for (const property in sauceObject) {
+      sauceObject[property] = validator.escape(`${sauceObject[property]}`)
+      // sauceObject[property] = validator.blacklist(`${sauceObject[property]}`)
+      console.log(sauceObject[property])
+    }
+    return sauceObject
+  }
+  escaping(sauceObject)
   delete sauceObject._id
   const sauce = new Sauce({
     ...sauceObject,
@@ -91,7 +101,7 @@ exports.likeThing = (req, res, next) => {
               .catch(error => res.status(400).json({ error }))
           }
           break
-          /* -- if user clicks on dislike -- */
+        /* -- if user clicks on dislike -- */
         case -1:
           if (!sauce.usersDisliked.includes(req.body.userId)) {
             Sauce.updateOne(
@@ -102,7 +112,7 @@ exports.likeThing = (req, res, next) => {
               .catch(error => res.status(400).json({ error }))
           }
           break
-          /* -- if user clicks while he already liked or disliked -- */
+        /* -- if user clicks while he already liked or disliked -- */
         case 0:
           if (sauce.usersLiked.includes(req.body.userId)) {
             Sauce.updateOne(
