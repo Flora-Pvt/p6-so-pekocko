@@ -9,7 +9,7 @@ exports.signup = (req, res, next) => {
   /* -- validate email and length of password -- */
   req.body.password = validator.escape(req.body.password)
   req.body.password = validator.blacklist(req.body.password, '\\[\\]')
-  if (validator.isEmail(req.body.email) === true && validator.isLength(req.body.password, 8, 50)) {
+  if (validator.isEmail(req.body.email) === true && validator.matches(req.body.password, /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=\\S+$)(?=.{8,50})/)) {
     /* -- password "salted" 10 times -- */
     bcrypt.hash(req.body.password, 10)
       .then(hash => {
@@ -23,7 +23,7 @@ exports.signup = (req, res, next) => {
       })
       .catch(error => res.status(500).json({ error }))
   } else {
-    res.status(400).json('Unvalid email or your password has to be 8 length')
+    res.status(400).json('email or password is invalid, your password must be at least 8 character long, contain a lowercase, an uppercase and a number')
   }
 }
 
