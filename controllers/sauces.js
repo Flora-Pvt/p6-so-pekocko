@@ -18,19 +18,19 @@ exports.getOneThing = (req, res, next) => {
     .catch(error => res.status(404).json({ error }))
 }
 
-/* -- create a sauce and resize uploaded image -- */
+/* -- create a sauce, resize uploaded image and sanitize inputs -- */
 exports.createThing = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce)
-  function escaping () {
+  delete sauceObject._id
+  function sanitize () {
     for (const property in sauceObject) {
       sauceObject[property] = validator.escape(`${sauceObject[property]}`)
-      // sauceObject[property] = validator.blacklist(`${sauceObject[property]}`)
-      console.log(sauceObject[property])
+      sauceObject[property] = validator.blacklist(`${sauceObject[property]}`, '\\[\\]')
     }
     return sauceObject
   }
-  escaping(sauceObject)
-  delete sauceObject._id
+  sanitize(sauceObject)
+  console.log(sanitize(sauceObject))
   const sauce = new Sauce({
     ...sauceObject,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
