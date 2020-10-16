@@ -1,6 +1,5 @@
 const fs = require('fs')
 const sharp = require('sharp')
-const validator = require('validator')
 
 const Sauce = require('../models/Sauce')
 
@@ -24,13 +23,11 @@ exports.createThing = (req, res, next) => {
   delete sauceObject._id
   function sanitize () {
     for (const property in sauceObject) {
-      sauceObject[property] = validator.escape(`${sauceObject[property]}`)
-      sauceObject[property] = validator.blacklist(`${sauceObject[property]}`, '\\[\\]')
+      sauceObject[property] = `${sauceObject[property]}`.replace(/\`+|\&+|\[+|\]+|\\+|\<+|\>+|\/+|$/, '')
     }
     return sauceObject
   }
   sanitize(sauceObject)
-  console.log(sanitize(sauceObject))
   const sauce = new Sauce({
     ...sauceObject,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
