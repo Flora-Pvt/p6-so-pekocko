@@ -42,21 +42,30 @@ exports.createThing = (req, res, next) => {
 /* -- modify a sauce and the image if necessary-- */
 exports.modifyThing = (req, res, next) => {
   if (req.file) {
-    JSON.parse(req.body.sauce)
+    const sauceObject = JSON.parse(req.body.sauce)
     const imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     Sauce.findOne({ _id: req.params.id })
       .then(sauce => {
         const filename = sauce.imageUrl.split('/images/')[1]
         fs.unlink(`images/${filename}`, () => {
-          Sauce.updateOne({ _id: req.params.id }, { ...req.file, $set: { imageUrl: imageUrl, likes: 0, dislikes: 0, usersLiked: [], usersDisliked: [] }, _id: req.params.id })
-            .then(() => res.status(200).json({ message: ' Sauce modified' }))
+          Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, $set: { imageUrl: imageUrl, likes: 0, dislikes: 0, usersLiked: [], usersDisliked: [] }, _id: req.params.id })
+            .then(() => {
+              sharp(req.file.path)
+                .resize(480, 480)
+                .toBuffer()
+                .then(data => {
+                  fs.writeFileSync(req.file.path, data)
+                  res.status(201).json({ message: 'Sauce modified !' })
+                })
+                .catch(error => res.status(500).json({ error }))
+            })
             .catch(error => res.status(400).json({ error }))
         })
       })
       .catch(error => res.status(500).json({ error }))
   } else {
-    Sauce.updateOne({ _id: req.params.id }, { ...req.file, $set: { likes: 0, dislikes: 0, usersLiked: [], usersDisliked: [] }, _id: req.params.id })
-      .then(() => res.status(200).json({ message: ' Sauce modified' }))
+    Sauce.updateOne({ _id: req.params.id }, { ...req.body, $set: { likes: 0, dislikes: 0, usersLiked: [], usersDisliked: [] }, _id: req.params.id })
+      .then(() => res.status(200).json({ message: 'Sauce modified' }))
       .catch(error => res.status(400).json({ error }))
   }
 }
