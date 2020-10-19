@@ -23,7 +23,7 @@ exports.createThing = (req, res, next) => {
   delete sauceObject._id
   function sanitize () {
     for (const property in sauceObject) {
-      sauceObject[property] = `${sauceObject[property]}`.replace(/\`+|\&+|\[+|\]+|\\+|\<+|\>+|\/+|$/, '')
+      sauceObject[property] = `${sauceObject[property]}`.replace(/`+|&+|\[+|\]+|\\+|>+|\/+|$/g, '')
     }
     return sauceObject
   }
