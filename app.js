@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const path = require('path')
+require('dotenv').config()
 
 const saucesRoutes = require('./routes/sauces')
 const userRoutes = require('./routes/user')
@@ -9,7 +10,7 @@ const userRoutes = require('./routes/user')
 const app = express()
 
 /* -- connection to MongoDB -- */
-mongoose.connect('mongodb+srv://moi:moi@cluster0.ri2gw.mongodb.net/test?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://' + process.env.DB_USER + ':' + process.env.DB_PASS + '@cluster0.ri2gw.mongodb.net/test?retryWrites=true&w=majority',
   {
     useNewUrlParser: true,
     useUnifiedTopology: true
