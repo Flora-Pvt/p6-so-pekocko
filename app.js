@@ -15,8 +15,8 @@ mongoose.connect('mongodb+srv://' + process.env.DB_USER + ':' + process.env.DB_P
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'))
+  .then(() => console.log('Successful connection to MongoDB'))
+  .catch(() => console.log('Connection to MongoDB failed'))
 
 /* -- configure request headers -- */
 app.use((req, res, next) => {
